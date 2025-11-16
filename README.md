@@ -49,7 +49,7 @@ We intentionally selected **“no”** so that we could build the configuration 
 
 <img width="702" height="712" alt="S2" src="https://github.com/user-attachments/assets/a272acdd-4ba3-4baa-9d69-837850ebb2d6" />
 
-We entered privileged EXEC mode using:
+We entered privileged **EXEC** mode using:
 
 - **`enable`** → Grants access to advanced commands  
 - **`configure terminal`** → Enters global configuration mode  

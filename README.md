@@ -28,7 +28,7 @@ The entire lab uses a minimal three-device design:
 - **Switch0** – Layer 2 access switch with VLANs and one trunk  
 - **PC0** – endpoint in the Marketing VLAN
 
-![Logical Topology](<S1.png>)
+<img width="1920" height="1032" alt="S1" src="https://github.com/user-attachments/assets/6464d5e5-b183-4bd6-acf2-0c06aa920bdc" />
 
 > **Cabling**  
 > - Router `Gig0/0/0` ↔ Switch `Fa0/1`: *copper straight-through* (router-to-switch)  
@@ -67,7 +67,7 @@ vlan 20
  name HR
 ```
 
-![VLAN Table](<S2.png>)
+<img width="702" height="712" alt="S2" src="https://github.com/user-attachments/assets/17d6e363-6014-4bb9-94aa-c6691d38d6c6" />
 
 > The `show vlan brief` output confirms VLAN 10 (`Marketing`) is active and that its access port is `Fa0/2`. VLAN 20 exists for future HR endpoints but is not yet associated with any ports.
 

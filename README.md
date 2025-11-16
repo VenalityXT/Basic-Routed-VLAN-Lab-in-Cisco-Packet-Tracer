@@ -67,7 +67,7 @@ vlan 20
  name HR
 ```
 
-<img width="702" height="712" alt="S2" src="https://github.com/user-attachments/assets/17d6e363-6014-4bb9-94aa-c6691d38d6c6" />
+<img width="702" height="712" alt="S5 2_Results" src="https://github.com/user-attachments/assets/92f6362f-e833-4234-b1bd-54431269aa0c" />
 
 > The `show vlan brief` output confirms VLAN 10 (`Marketing`) is active and that its access port is `Fa0/2`. VLAN 20 exists for future HR endpoints but is not yet associated with any ports.
 
@@ -89,13 +89,13 @@ interface fastEthernet0/1
  switchport trunk allowed vlan 10,20
 ```
 
-![Switch VLAN & Port Config](<S6.png>)
+<img width="702" height="712" alt="S4" src="https://github.com/user-attachments/assets/86cc67d5-d1ef-4483-a912-b269892fa2f5" />
 
 > This closely mirrors how an access switch in a production network connects user devices on access ports while uplinking to a router or L3 switch via a trunk.
 
 ### 2.3 Switch Interface Health
 
-![Switch Interface Status](<S7.png>)
+<img width="702" height="712" alt="S5 1_Results" src="https://github.com/user-attachments/assets/4c250d80-3b1c-4d79-8a8f-a0b20ad83a08" />
 
 > The `show ip interface brief` output shows `Fa0/1` and `Fa0/2` in an `up/up` state, while all other interfaces are administratively down. The switch itself does not require an IP address for this lab; it operates purely at Layer 2.
 
@@ -113,7 +113,7 @@ interface gigabitEthernet0/0/0
  no shutdown
 ```
 
-![Initial Router Interface Config](<S4.png>)
+<img width="702" height="712" alt="S2" src="https://github.com/user-attachments/assets/281c39f7-c541-4a2f-bac3-fe7b95c7a8f8" />
 
 This provided basic connectivity on `Gig0/0/0`, but as later troubleshooting showed, the `192.168.1.0/24` network did **not** match the DHCP scope being created for `192.168.10.0/24`.
 
@@ -131,9 +131,9 @@ ip dhcp pool VLAN10_Pool
  dns-server 8.8.8.8
 ```
 
-![DHCP Pool Configuration](<S5.png>)
+<img width="702" height="712" alt="S3" src="https://github.com/user-attachments/assets/1fcb5528-5380-4c43-b51e-ac02c4b7ac4e" />
 
-> At one point, `show ip dhcp binding` was mistakenly run from global configuration mode (`Router(config)#`), which produced an “invalid input” error. Exiting back to privileged E```EC (`Router#`) resolved the issue and allowed verification of DHCP bindings later in the lab.
+> `show ip dhcp binding` was run from global configuration mode (`Router(config)#`), which produced an “invalid input” error. Exiting back to privileged EXEC (`Router#`) resolved the issue and allowed verification of DHCP bindings later in the lab.
 
 ### 3.3 Router-on-a-Stick Subinterface
 
@@ -158,7 +158,7 @@ interface gigabitEthernet0/0/0.10
 
 Once the router’s DHCP and subinterface configuration were complete and the switch ports were correctly mapped, PC0 was set to obtain an IP address automatically.
 
-![PC DHCP & Ping Success](<S9.png>)
+<img width="702" height="712" alt="S9" src="https://github.com/user-attachments/assets/224756e5-3c37-4b0c-b278-8e95724f283c" />
 
 The PC successfully received:
 
@@ -178,7 +178,7 @@ This lab intentionally preserves the troubleshooting sequence to reflect realist
 
 After wiring the devices and performing the initial configurations, the first verification step was a ping from PC0 to the router’s IP address. At that point, the router’s physical interface `G0/0/0` was configured with `192.168.1.1/24`, and the switch trunk/access settings were still being finalized.
 
-![PC Initial Ping Failure](<S6.png>)
+<img width="702" height="712" alt="S6" src="https://github.com/user-attachments/assets/bd008a75-7fc2-430a-9ad5-0154fa86655b" />
 
 - PC0 attempted to ping `192.168.1.1` and received 100% packet loss.  
 - A follow-up ping from the switch to the same address also failed, indicating the issue was not limited to the end host.
@@ -214,7 +214,9 @@ To fix the mismatch and properly route for VLAN 10:
 3. Ensured the switch port to the router (`Fa0/1`) was in trunk mode and allowed VLAN 10.  
 4. Set PC0 to use DHCP so it could obtain a `192.168.10.x` address and the correct default gateway (`192.168.10.1`).
 
-![Ping & Trunk Verification](<S3.png>)
+<img width="702" height="712" alt="S7" src="https://github.com/user-attachments/assets/00026181-859b-4b83-b092-f29eb405147f" />
+
+<img width="702" height="712" alt="S8" src="https://github.com/user-attachments/assets/2282e1c5-b1ce-48be-a4ef-652cad6b3023" />
 
 With these changes in place, a new ping from PC0 to `192.168.10.1` succeeded with 0% loss, and `ipconfig` on the PC showed a leased IP of `192.168.10.2` with the expected subnet mask and gateway.
 

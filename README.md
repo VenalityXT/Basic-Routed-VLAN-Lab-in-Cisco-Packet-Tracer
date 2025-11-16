@@ -25,9 +25,9 @@ All configuration and troubleshooting steps are documented here so the lab can b
 
 The entire lab uses a minimal three-device design:
 
-- **Router0** – default gateway and DHCP server  
-- **Switch0** – Layer 2 access switch with VLANs and one trunk  
-- **PC0** – endpoint in the Marketing VLAN
+- **Router0** - default gateway and DHCP server  
+- **Switch0** - Layer 2 access switch with VLANs and one trunk  
+- **PC0** - endpoint in the Marketing VLAN
 
 <img width="1920" height="1032" alt="S1" src="https://github.com/user-attachments/assets/6464d5e5-b183-4bd6-acf2-0c06aa920bdc" />
 
@@ -53,7 +53,7 @@ DHCP for VLAN 10:
 
 ---
 
-## 2. Switch Configuration – VLANs & Trunking
+## 2. Switch Configuration - VLANs & Trunking
 
 The switch provides Layer 2 segmentation and a single 802.1Q trunk toward the router.
 
@@ -102,7 +102,7 @@ interface fastEthernet0/1
 
 ---
 
-## 3. Router Configuration – Subinterfaces & DHCP
+## 3. Router Configuration - Subinterfaces & DHCP
 
 ### 3.1 Initial Physical Interface Setup
 
@@ -184,7 +184,7 @@ After wiring the devices and performing the initial configurations, the first ve
 - PC0 attempted to ping `192.168.1.1` and received 100% packet loss.  
 - A follow-up ping from the switch to the same address also failed, indicating the issue was not limited to the end host.
 
-### 5.2 Verifying Layer 2 – VLANs & Trunk
+### 5.2 Verifying Layer 2 - VLANs & Trunk
 
 The next step was to verify the Layer 2 configuration:
 
@@ -223,9 +223,9 @@ With these changes in place, a new ping from PC0 to `192.168.10.1` succeeded wit
 
 ---
 
-## 6. Quick Reference – Core Commands
+## 6. Quick Reference - Core Commands
 
-### 6.1 Switch – VLANs, Access & Trunk
+### 6.1 Switch - VLANs, Access & Trunk
 
 ```cisco
 ! VLAN creation
@@ -245,7 +245,7 @@ interface fastEthernet0/1
  switchport trunk allowed vlan 10,20
 ```
 
-### 6.2 Router – Subinterface & DHCP
+### 6.2 Router - Subinterface & DHCP
 
 ```cisco
 ! Router-on-a-stick for VLAN 10

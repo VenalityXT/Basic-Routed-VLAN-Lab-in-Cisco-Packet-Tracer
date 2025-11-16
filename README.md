@@ -15,7 +15,7 @@ This lab walks through the complete configuration of a **routed VLAN access netw
 
 All configuration and troubleshooting steps are documented here so the lab can be reproduced from scratch or used as a study artifact. The corresponding Packet Tracer file is included in the repository for cloning or download:  
 
-**[Network Segmentation & VLAN Configuration.pkt](Network%20Segmentation%20%26%20VLAN%20Configuration.pkt)**
+**[Network Segmentation & VLAN Configuration](Network%20Segmentation%20%26%20VLAN%20Configuration.pkt)**
 
 ---
 

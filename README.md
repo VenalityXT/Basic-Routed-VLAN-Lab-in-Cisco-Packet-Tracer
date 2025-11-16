@@ -45,7 +45,7 @@ The environment contains:
 ## 2. Router Initial Configuration (S2)
 
 Upon opening the router, Packet Tracer displays the **System Configuration Dialog**.  
-We intentionally selected **“no”** so that we could build the configuration manually; mirroring industry-standard workflows.
+We intentionally selected **“no”** so that we could build the configuration manually.
 
 <img width="702" height="712" alt="S2" src="https://github.com/user-attachments/assets/a272acdd-4ba3-4baa-9d69-837850ebb2d6" />
 

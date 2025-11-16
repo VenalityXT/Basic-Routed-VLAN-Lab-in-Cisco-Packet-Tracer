@@ -156,9 +156,17 @@ Next, we returned to the switch to complete the uplink configuration so that VLA
 We set `Fa0/1` to trunk mode and allowed VLANs 10 and 20.  
 This established full Layer 2 communication between the VLAN and the router subinterface.
 
+## 9. Final PC Configuration Confirmation
+
+This image shows the PC set explicitly to **DHCP**, which is required for it to receive the correct addressing information.
+
+<img width="702" height="712" alt="S10" src="https://github.com/user-attachments/assets/363e828e-3060-42db-bb27-98185406943a" />
+
+> We had left the PC in static mode earlier in testing, this alone would have blocked DHCP. Ensuring it was set to DHCP was essential for final validation.
+
 ---
 
-## 9. Successful Ping & DHCP Assignment (S9)
+## 10. Successful Ping & DHCP Assignment
 
 With the gateway corrected and trunking finalized, the PC finally obtained a proper DHCP lease.
 
@@ -172,17 +180,8 @@ A ping to `192.168.10.1` returned **100% success**, confirming the network was n
 
 ---
 
-## 10. Final PC Configuration Confirmation (S10)
-
-This image shows the PC set explicitly to **DHCP**, which is required for it to receive the correct addressing information.
-
-<img width="702" height="712" alt="S10" src="https://github.com/user-attachments/assets/363e828e-3060-42db-bb27-98185406943a" />
-
-> If the PC had been left in static mode earlier in testing, this alone would have blocked DHCP. Ensuring it was set to DHCP was essential for final validation.
-
----
-
 ## Conclusion
 
 This project demonstrated a complete workflow for building and validating a segmented network with VLANs, DHCP, and router-on-a-stick routing. Beyond applying commands, it walked through real troubleshooting steps: identifying addressing mismatches, correcting subinterfaces, enabling trunking, and validating end-to-end connectivity. The final working environment behaves exactly like a small enterprise network, with scalable VLAN architecture and centralized Layer 3 routing.
 
+---

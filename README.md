@@ -1,259 +1,332 @@
 # Network Segmentation & VLAN Configuration  
-Router-on-a-Stick • DHCP • VLANs • Cisco Packet Tracer
+### *Router-on-a-Stick • DHCP • VLAN Trunking • Inter-VLAN Routing*  
+**Cisco Packet Tracer Technical Lab Guide + Professional Documentation**
 
-[![Cisco IOS](https://img.shields.io/badge/Platform-Cisco_IOS-1ba0d7?logo=cisco)](https://www.cisco.com/)
-[![Packet Tracer](https://img.shields.io/badge/Tool-Packet_Tracer-0a7cff?logo=cisco)](https://www.netacad.com/courses/packet-tracer)
+[![Cisco IOS](https://img.shields.io/badge/Platform-Cisco_IOS-1ba0d7?logo=cisco)](#)
+[![Packet Tracer](https://img.shields.io/badge/Tool-Packet_Tracer-0a7cff?logo=cisco)](#)
 [![Routing & Switching](https://img.shields.io/badge/Focus-Routing_&_Switching-green)](#)
 [![DHCP](https://img.shields.io/badge/Service-DHCP_Automation-yellow)](#)
-[![VLANs](https://img.shields.io/badge/Feature-VLAN10-orange)](#)
+[![VLANs](https://img.shields.io/badge/Feature-VLAN_Segmentation-orange)](#)
 
 ---
 
-## Project Overview
+# 📘 Project Overview
 
-This project demonstrates how to configure a segmented Layer 2 network with DHCP, VLANs, trunking, and router-on-a-stick using Cisco Packet Tracer. A single router provides Layer 3 services for the Marketing VLAN, while a Layer 2 switch handles VLAN membership and 802.1Q trunking. The PC in VLAN 10 receives its network configuration dynamically via a DHCP pool hosted on the router.
+This lab demonstrates how to design and configure a segmented network using **Cisco Router-on-a-Stick**, **DHCP automation**, **VLAN segmentation**, and **802.1Q trunking**. The environment mirrors a small business infrastructure where multiple departments operate on separate broadcast domains while sharing the same physical hardware.
 
-The goal is not only to show the final working configuration, but also to walk through the real troubleshooting steps and decisions made along the way; mirroring how network engineers diagnose and fix issues in live environments. You can download and explore the completed Packet Tracer file below:
+In this setup:
 
-**[Network Segmentation & VLAN Configuration](Network%20Segmentation%20%26%20VLAN%20Configuration.pkt)**
+- The **router** provides DHCP services and Layer 3 routing.
+- The **switch** handles VLAN segmentation and trunking.
+- The **PC** dynamically receives IP settings from the router based on its VLAN assignment.
 
----
+The project includes **deep command explanations** to ensure you understand not only *what* to type, but *why* each step is required.  
+This builds a real-world mental model of how VLAN isolation, routing, and DHCP all interact.
 
-## 1. Logical Topology & Planning
-
-The environment contains:
-
-- **Router0** → Provides routing and DHCP  
-- **Switch0** → Handles VLANs and trunking  
-- **PC0** → Client in VLAN 10, set to obtain IP via DHCP
-
-<img width="1920" height="1032" alt="S1" src="https://github.com/user-attachments/assets/3d50010f-e3a6-474e-99cf-e3b490624148" />
-
-**Cabling Used:**  
-- Router ↔ Switch → Straight-through (different device types)  
-- Switch ↔ PC → Straight-through  
-
-**VLAN / IP Design**
-
-| VLAN | Purpose     | Subnet           | Gateway         |
-|------|-------------|------------------|-----------------|
-| 10   | Marketing   | 192.168.10.0/24  | 192.168.10.1    |
-| 20   | HR          | (Reserved)       | (Planned)       |
+![Topology]("images/PacketTracer_Topology_1.png")
 
 ---
 
-## 2. Router Initial Configuration
+# 🖥️ 1. Logical Topology
 
-Upon opening the router, Packet Tracer displays the **System Configuration Dialog**.  
-We intentionally selected **“no”** so that we could build the configuration manually. This allows full granular control of every interface, service, and protocol.
+The network consists of:
 
-<img width="702" height="712" alt="S2" src="https://github.com/user-attachments/assets/a272acdd-4ba3-4baa-9d69-837850ebb2d6" />
+- **Router0** — Subinterfaces for VLAN10 and VLAN20 + DHCP  
+- **Switch0** — VLAN segmentation (10 & 20) + trunk on Fa0/1  
+- **PC0** — DHCP client assigned to VLAN10  
 
-We entered privileged **EXEC** mode using the command:
+This reflects an enterprise-style design where each department is given its own subnet and gateway.
+
+---
+
+# ⚙️ 2. Router Initialization & Interface Activation
+
+When the router boots, IOS asks whether you want to enter the setup dialog. Selecting **“no”** is standard for controlled, manual configuration.
+
+![Step 1]("images/Step 1.png")
+
+### Commands Entered
+
+```bash
+enable
+configure terminal
+interface gigabitEthernet0/0/0
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+```
+
+### 🔍 Deep Explanation of What These Commands Do
 
 - **`enable`**  
-  - Moves from *user EXEC* (`Router>`) to *privileged EXEC* (`Router#`)  
-  - Required for viewing system-level information and entering configuration mode  
-  - No parameters
+  - Elevates you from *user EXEC* (`Router>`) to *privileged EXEC* (`Router#`).  
+  - Required to view full configurations, run diagnostics, or enter config mode.
 
-Next, we entered global configuration mode:
-
-- **`configure terminal`**  
-  - Abbreviated as `conf t`  
-  - Allows applying all system-wide and interface-specific changes  
-  - No parameters
-
-We then configured the physical interface:
+- **`configure terminal`** or `conf t` 💡  
+  - Enters *global configuration mode*, where you make persistent changes to the device.  
+  - From here you can configure interfaces, routing protocols, VLANs, services, etc.
 
 - **`interface gigabitEthernet0/0/0`**  
-  - Opens the configuration context for that specific interface  
-  - Interface IDs follow: `type slot/port/subport`
-
-Inside the interface we used:
-
-- **`ip address <address> <mask>`**  
-  Assigns an IP address to the interface. Example:  
-  `ip address 192.168.1.1 255.255.255.0`
-
-- **`no shutdown`**  
-  - Brings the interface up  
-  - All Cisco interfaces default to *administratively down*
-
-Although this activated the interface, the IP (`192.168.1.1`) did **not** match our intended VLAN 10 design — which ultimately contributed to the ping failure observed later.
-
----
-
-## 3. DHCP Configuration
-
-With the router active, we configured DHCP exclusions and created a dedicated DHCP pool.
-
-<img width="702" height="712" alt="S3" src="https://github.com/user-attachments/assets/bb0eca13-c95c-4a8b-92b4-7f913e978cfa" />
-
-### Commands Introduced Here
-
-- **`ip dhcp excluded-address <start> <end>`**  
-  Prevents DHCP from assigning addresses in a reserved range.  
-  We used:  
-  - `ip dhcp excluded-address 192.168.10.1`  
-  - `ip dhcp excluded-address 192.168.10.10`  
-
-- **`ip dhcp pool <name>`**  
-  Creates a DHCP pool and enters DHCP configuration mode.  
-  We named ours `VLAN10_Pool`.
-
-Inside the DHCP pool:
-
-- **`network <ip> <mask>`**  
-  Defines the subnet the pool will use.
-
-- **`default-router <ip>`**  
-  Sets the gateway handed out to clients; must match router-on-a-stick subinterface.
-
-- **`dns-server <ip>`**  
-  Provides a DNS server address to DHCP clients.
-
-After configuration we verified bindings using:
-
-- **`show ip dhcp binding`**  
-  - EXEC-level command  
-  - Displays active DHCP leases  
-  - Failed at first because it was incorrectly run in config mode
-
----
-
-## 4. VLAN Creation & Port Assignment
-
-Next, we configured the Layer 2 switch.
-
-<img width="702" height="712" alt="S4" src="https://github.com/user-attachments/assets/c35f99c2-5b3a-4478-bee2-05d7dc77b86d" />
-
-### Commands Introduced Here
-
-- **`vlan <id>`**  
-  Creates (or opens) a VLAN configuration context.  
-  We created:  
-  - `vlan 10` → named *Marketing*  
-  - `vlan 20` → named *HR*
-
-- **`interface fastEthernet0/2`**  
-  Enters the interface to assign it to a VLAN.
-
-Inside the interface:
-
-- **`switchport mode access`**  
-  Forces the port into access mode.
-
-- **`switchport access vlan <id>`**  
-  Assigns the VLAN to the interface (untagged).
-
-At this point the VLANs were created and the PC was assigned to VLAN 10, but trunking and subinterfaces were not yet configured, so routing still could not occur.
-
----
-
-## 5. L2 Verification
-
-Before testing connectivity, we verified Layer 2 status.
-
-### **Switch Interface Summary (S5.1)**  
-<img width="702" height="712" alt="S5 1_Results" src="https://github.com/user-attachments/assets/366fbc36-eaa0-4ec5-993c-5e0ff537c04b" />
-
-`show ip interface brief` confirmed the physical links were up.
-
-### **VLAN Table (S5.2)**  
-<img width="702" height="712" alt="S5 2_Results" src="https://github.com/user-attachments/assets/0ee564ff-409f-476a-8507-14c423e9d33c" />
-
-`show vlan brief` showed VLAN 10 correctly mapped to `Fa0/2`.
-
-### **Trunk Capability (S5.3)**  
-<img width="702" height="712" alt="S5 3_Results" src="https://github.com/user-attachments/assets/595de571-e9a9-4c02-ae23-e35a7f591a10" />
-
-`show interfaces trunk` confirmed that `Fa0/1` was able to operate as a trunk, but still needed configuration.
-
----
-
-## 6. First Connectivity Test - Ping Failure
-
-We attempted to ping the router.
-
-<img width="702" height="712" alt="S6" src="https://github.com/user-attachments/assets/0187f75c-d972-45a4-bd2b-62ece95726a7" />
-
-The PC failed to reach `192.168.1.1`, which made sense once we realized:
-
-- The DHCP pool was for **192.168.10.0/24**  
-- The router’s interface was on **192.168.1.0/24**  
-- VLAN 10’s gateway **should be 192.168.10.1**
-
-This mismatch pointed directly to the missing router subinterface.
-
----
-
-## 7. Creating the Router-on-a-Stick Subinterface
-
-We aligned routing with the VLAN design by creating a subinterface.
-
-<img width="702" height="712" alt="S7" src="https://github.com/user-attachments/assets/33e33ee1-949d-4b00-9366-cffe12432720" />
-
-### Commands Introduced Here
-
-- **`interface gigabitEthernet0/0/0.<vlan>`**  
-  Creates a logical subinterface for a VLAN.  
-  Example: `interface g0/0/0.10`
-
-- **`encapsulation dot1Q <vlan-id>`**  
-  Enables 802.1Q tagging on the subinterface.  
-  Example: `encapsulation dot1Q 10`
+  - Selects the physical interface that connects to the switch.  
+  - Naming convention: `type slot/subslot/port`.
 
 - **`ip address <ip> <mask>`**  
-  Assigns the gateway for that VLAN.
+  - Assigns an IP address to the interface.  
+  - This creates the router’s identity on that network.
 
-This corrected the addressing mismatch and completed the router side of the router-on-a-stick setup.
+- **`no shutdown`**  
+  - Activates the interface — all Cisco router interfaces start *administratively down*.  
+  - ⚠️ Without this, the interface will not forward packets even if configured correctly.
+
+### ⚠️ Why 192.168.1.1/24 Will Not Work Later  
+Once VLAN10 is created, the PC will be in the **192.168.10.0/24** network.  
+A PC cannot communicate with a router using a gateway in a **different** network.  
+Thus routing requires a gateway inside its VLAN subnet: **192.168.10.1**.
 
 ---
 
-## 8. Updating the Switch Trunk Configuration
+# 📡 3. DHCP Configuration for VLAN10
 
-Next, we configured the switch uplink so traffic could reach the subinterface.
+We configure DHCP to automate client IP assignment.
 
-<img width="702" height="712" alt="S8" src="https://github.com/user-attachments/assets/24e459a1-c2cd-4fd8-b6a2-b97011a127a8" />
+![Step 2]("images/Step 2.png")
 
-### Commands Introduced Here
+### Commands Entered
+
+```bash
+ip dhcp excluded-address 192.168.10.1
+ip dhcp excluded-address 192.168.10.10
+
+ip dhcp pool VLAN10_Pool
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 8.8.8.8
+```
+
+### 🔍 Deep Explanation
+
+- **`ip dhcp excluded-address`**  
+  Prevents DHCP from leasing certain addresses.  
+  - `.1` = gateway  
+  - `.10` = reserved static host
+
+- **`ip dhcp pool VLAN10_Pool`**  
+  Creates a pool used exclusively by VLAN10.  
+  💡 Pool naming aligned with VLAN ID is an enterprise best practice.
+
+- **`network 192.168.10.0 255.255.255.0`**  
+  Specifies the subnet for DHCP leases.
+
+- **`default-router 192.168.10.1`**  
+  Supplies the **default gateway** to clients — must match the router’s VLAN10 subinterface.
+
+- **`dns-server 8.8.8.8`**  
+  Assigns Google’s DNS to DHCP clients.
+
+---
+
+# 🧩 4. VLAN Creation & Switch Access Port Assignment
+
+We now build the segmented Layer 2 domains inside the switch.
+
+![Step 3]("images/Step 3.png")
+
+### Commands Entered
+
+```bash
+vlan 10
+ name Marketing
+
+vlan 20
+ name HR
+
+interface fa0/2
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+```
+
+### 🔍 Deep Explanation
+
+- **`vlan 10` / `vlan 20`**  
+  Creates two isolated broadcast domains.  
+  Devices in VLAN10 cannot communicate with VLAN20 without a router.
+
+- **`switchport mode access`**  
+  Tells the switch the port is an endpoint device, not a trunk.
+
+- **`switchport access vlan 10`**  
+  Assigns PC0 into the Marketing VLAN.
+
+- **`no shutdown`**  
+  Ensures the port is active at Layer 1 & Layer 2.
+
+---
+
+# 🔍 5. Layer 2 Verification
+
+![Switch State]("images/Step 5 vlan brief interfaces trunk Switch.png")
+
+### Useful Commands
+
+```bash
+show vlan brief
+show interfaces trunk
+show ip interface brief
+```
+
+These confirmed:
+
+- Fa0/2 → correctly assigned to VLAN10  
+- Fa0/1 → capable of trunking  
+- All switch ports active and operational  
+
+---
+
+# ❌ 6. Initial Connectivity Failure
+
+![Ping Failure]("images/Step 5 Ping VLANs.png")
+
+### Why the Ping Failed  
+- Router was using **192.168.1.1**  
+- PC was using **192.168.10.x**  
+- They were in different IP networks  
+- No routing occurred between them  
+
+The correct fix: create router subinterfaces.
+
+---
+
+# 🚦 7. Router-on-a-Stick Subinterface Configuration
+
+![Subinterfaces]("images/Step 1.png")
+
+### Commands Entered
+
+```bash
+interface gigabitEthernet0/0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+
+interface gigabitEthernet0/0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+```
+
+### 🔍 Deep Explanation
+
+- **`interface g0/0/0.10`**  
+  Creates a VLAN10 *logical* interface — VLAN10 traffic is routed here.
+
+- **`encapsulation dot1Q 10`**  
+  Enables 802.1Q tagging for VLAN10.  
+  💡 Switch marks VLAN membership by tagging frames; router reads those tags.
+
+- **`ip address`**  
+  This becomes the **default gateway** for all hosts in that VLAN.
+
+Each VLAN gets its own gateway:  
+- VLAN10 → 192.168.10.1  
+- VLAN20 → 192.168.20.1  
+
+This is essential because routers forward packets **between** networks.
+
+---
+
+# 🔗 8. Configuring the Trunk Link (Switch → Router)
+
+![Trunk]("images/Step 5 vlan brief interfaces trunk Switch.png")
+
+### Commands Entered
+
+```bash
+interface fa0/1
+ switchport mode trunk
+ switchport trunk allowed vlan all
+ no shutdown
+```
+
+### 🔍 Deep Explanation
 
 - **`switchport mode trunk`**  
-  Converts the interface to trunking mode.
+  Makes Fa0/1 a trunk port capable of carrying multiple VLANs.
 
-- **`switchport trunk allowed vlan <list>`**  
-  Specifies which VLANs are allowed on the trunk.
+- **`allowed vlan all`**  
+  Permits all VLANs (including 10 and 20) to reach the router.
 
-Once the trunk matched the router subinterface, inter-VLAN communication became possible.
-
----
-
-## 9. Final PC Configuration Confirmation
-
-This image shows the PC set explicitly to **DHCP**, which is required for it to receive the correct addressing information.
-
-<img width="702" height="712" alt="S10" src="https://github.com/user-attachments/assets/363e828e-3060-42db-bb27-98185406943a" />
-
-> The PC was previously left in static mode during testing; this alone would have prevented DHCP from assigning an address. Changing it to DHCP ensured proper VLAN participation.
+💡 Without trunking, router-on-a-stick cannot function.
 
 ---
 
-## 10. Successful Ping & DHCP Assignment
+# 🖥️ 9. PC DHCP Configuration
 
-With the gateway corrected and trunking finalized, the PC obtained a proper DHCP lease.
+![PC DHCP]("images/Step 4.png")
 
-<img width="702" height="712" alt="S9" src="https://github.com/user-attachments/assets/f81f64ea-c118-4300-9e59-35992b2d6003" />
+Once the PC NIC is set to DHCP, it receives:
 
-- Assigned IP: `192.168.10.2`  
-- Default Gateway: `192.168.10.1`  
-- DNS: `8.8.8.8`  
+- **IP:** 192.168.10.2  
+- **Mask:** 255.255.255.0  
+- **Gateway:** 192.168.10.1  
+- **DNS:** 8.8.8.8  
 
-Ping to `192.168.10.1` was successful, confirming full network functionality.
+All supplied by the `VLAN10_Pool` DHCP configuration.
+
+---
+
+# ✅ 10. Successful Connectivity Tests
+
+![Successful Ping]("images/Step 5 Ping VLANs.png")
+
+We validated routing by pinging both VLAN gateway interfaces:
+
+- 192.168.10.1 → local VLAN default gateway  
+- 192.168.20.1 → remote VLAN gateway (inter-VLAN routing)  
+
+![Bindings]("images/Step 5 dhcp binding Router.png")
+
+`show ip dhcp binding` confirmed the DHCP lease for 192.168.10.2.
 
 ---
 
-## Conclusion
+# 📘 Deep Command Reference (Consolidated)
 
-This project demonstrated a complete workflow for building and validating a segmented network with VLANs, DHCP, and router-on-a-stick routing. Beyond applying commands, it walked through real troubleshooting steps: identifying addressing mismatches, correcting subinterfaces, enabling trunking, and validating end-to-end connectivity. The final working environment behaves exactly like a small enterprise network, with scalable VLAN architecture and centralized Layer 3 routing.
+### EXEC & Configuration Modes  
+- **enable** — privileged EXEC mode  
+- **configure terminal** — global config mode  
+
+### Router Interfaces  
+- **interface g0/0/0** — physical port to switch  
+- **interface g0/0/0.10** — VLAN10 subinterface  
+- **encapsulation dot1Q X** — enables tagging  
+
+### IP Addressing  
+- **ip address X Y** — assigns Layer 3 identity  
+- **no shutdown** — activates interface  
+
+### DHCP  
+- **ip dhcp excluded-address** — reserve IPs  
+- **ip dhcp pool NAME** — create VLAN-specific pool  
+- **default-router** — client gateway  
+- **dns-server** — DNS for clients  
+
+### Switch VLANs  
+- **vlan X** — create VLAN  
+- **switchport mode access** — endpoint port  
+- **switchport access vlan X** — assign VLAN  
+
+### Trunking  
+- **switchport mode trunk** — allows VLAN tagging  
+- **switchport trunk allowed vlan all** — permits all VLANs  
+
+### Verification  
+- **show vlan brief** — VLAN membership  
+- **show interfaces trunk** — trunk status  
+- **show ip dhcp binding** — DHCP leases  
 
 ---
+
+# 🏁 Final Summary
+
+This project implemented a fully segmented network using VLANs, DHCP, and router-on-a-stick routing. By configuring subinterfaces, trunk ports, DHCP pools, and access ports, we created a scalable multi-VLAN environment identical to what is used in enterprise networks. The detailed command explanations illuminate how Layer 2 segmentation, Layer 3 routing, and DHCP automation work together to deliver a clean, efficient, and secure network design.
+

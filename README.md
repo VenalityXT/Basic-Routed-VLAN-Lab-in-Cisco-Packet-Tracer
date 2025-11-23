@@ -28,7 +28,7 @@ The switch provides:
 
 The PC receives its network configuration dynamically from the router based on its VLAN membership. Each step in this document includes **deep explanations** of commands and concepts to reinforce practical understanding.
 
-![Topology]("images/PacketTracer_Topology_1.png")
+<img width="1920" height="1032" alt="PacketTracer_Topology_1" src="https://github.com/user-attachments/assets/c8618d25-8a99-405b-bc02-3d5d42435baa" />
 
 ---
 
@@ -47,7 +47,7 @@ This topology mirrors a traditional single-switch, single-router environment in 
 
 When the router boots, IOS presents the System Configuration Dialog. We bypass it to configure the device manually from privileged EXEC mode.
 
-![Router Init]("images/Step 1.png")
+<img width="702" height="712" alt="Step 1" src="https://github.com/user-attachments/assets/66b66fbd-ac6a-418d-8f19-786a17a097c3" />
 
 ### Commands Used
 
@@ -90,7 +90,7 @@ The address `192.168.1.1/24` is not used later because VLAN 10 requires a gatewa
 
 The router distributes IP addresses automatically to VLAN 10 devices.
 
-![DHCP Config]("images/Step 2.png")
+<img width="702" height="712" alt="Step 2" src="https://github.com/user-attachments/assets/9ef2459e-5303-4ae5-9b72-984154bf6d55" />
 
 ### Commands Used
 
@@ -132,7 +132,7 @@ If a VLAN10 client does not receive an address, ensure the PC is set to **DHCP**
 
 We created VLAN 10 (Marketing) and VLAN 20 (HR), then assigned the PC’s port (Fa0/2) to VLAN 10.
 
-![VLAN Config]("images/Step 3.png")
+<img width="702" height="712" alt="Step 3" src="https://github.com/user-attachments/assets/f89a1423-c60b-4366-a767-fc10f2270428" />
 
 ### Commands Used
 
@@ -172,7 +172,7 @@ An access port must belong to exactly one VLAN.
 
 We verified VLAN assignments and trunk readiness.
 
-![VLAN & Trunk Verification]("images/Step 5 vlan brief interfaces trunk Switch.png")
+<img width="702" height="712" alt="Step 5 Ping VLANs" src="https://github.com/user-attachments/assets/2f66d848-a0b1-4561-8f91-06cbd673933f" />
 
 ### Commands Used
 
@@ -197,7 +197,7 @@ If `Fa0/2` appears in VLAN 1, the PC will not receive a VLAN10 DHCP address.
 
 We created subinterfaces to route between VLANs using 802.1Q tagging.
 
-![Subinterfaces]("images/Step 1.png")
+<img width="702" height="712" alt="Step 1" src="https://github.com/user-attachments/assets/0051c284-ebfd-4e05-a8b4-42da4e74e6af" />
 
 ### Commands Used
 
@@ -238,7 +238,7 @@ Each VLAN requires a unique Layer 3 gateway in its own subnet for routing to fun
 
 We convert Fa0/1 into a trunk to carry VLAN tags.
 
-![Trunk Config]("images/Step 5 vlan brief interfaces trunk Switch.png")
+<img width="702" height="701" alt="Step 5 vlan brief interfaces trunk Switch" src="https://github.com/user-attachments/assets/dfdb43a9-9772-4ccd-92b4-8f9fb69ea18a" />
 
 ### Commands Used
 
@@ -267,7 +267,7 @@ If routing fails, ensure Fa0/1 is not accidentally configured as an access port.
 
 # 8. PC DHCP Configuration
 
-![PC DHCP]("images/Step 4.png")
+<img width="702" height="712" alt="Step 4" src="https://github.com/user-attachments/assets/463d9cf1-bd2f-4ee4-aa16-e337aa7c4e6c" />
 
 After setting the PC to obtain an IP via DHCP, it successfully received:
 
@@ -289,9 +289,9 @@ We validated end-to-end routing and DHCP operation.
 ### Successful Tests
 
 - `ping 192.168.10.1` → reached VLAN10’s gateway  
-- `ping 192.168.20.1` → confirmed inter-VLAN routing via the router  
-
-![DHCP Bindings]("images/Step 5 dhcp binding Router.png")
+- `ping 192.168.20.1` → confirmed inter-VLAN routing via the router
+  
+<img width="702" height="156" alt="Step 5 dhcp binding Router" src="https://github.com/user-attachments/assets/330f9ad7-d4ae-49db-8910-9c790866d616" />
 
 `show ip dhcp binding` confirmed the DHCP lease for `192.168.10.2`.
 

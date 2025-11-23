@@ -10,7 +10,7 @@
 
 ---
 
-# 📘 Project Overview
+# Project Overview
 
 This lab demonstrates how to design and configure a segmented network using **Cisco Router-on-a-Stick**, **DHCP automation**, **VLAN segmentation**, and **802.1Q trunking**. The environment mirrors a small business infrastructure where multiple departments operate on separate broadcast domains while sharing the same physical hardware.
 
@@ -27,7 +27,7 @@ This builds a real-world mental model of how VLAN isolation, routing, and DHCP a
 
 ---
 
-# 🖥️ 1. Logical Topology
+# 1. Logical Topology
 
 The network consists of:
 
@@ -39,7 +39,7 @@ This reflects an enterprise-style design where each department is given its own 
 
 ---
 
-# ⚙️ 2. Router Initialization & Interface Activation
+# 2. Router Initialization & Interface Activation
 
 When the router boots, IOS asks whether you want to enter the setup dialog. Selecting **“no”** is standard for controlled, manual configuration.
 
@@ -55,7 +55,7 @@ interface gigabitEthernet0/0/0
  no shutdown
 ```
 
-### 🔍 Deep Explanation of What These Commands Do
+### Deep Explanation of What These Commands Do
 
 - **`enable`**  
   - Elevates you from *user EXEC* (`Router>`) to *privileged EXEC* (`Router#`).  
@@ -84,7 +84,7 @@ Thus routing requires a gateway inside its VLAN subnet: **192.168.10.1**.
 
 ---
 
-# 📡 3. DHCP Configuration for VLAN10
+# 3. DHCP Configuration for VLAN10
 
 We configure DHCP to automate client IP assignment.
 
@@ -102,7 +102,7 @@ ip dhcp pool VLAN10_Pool
  dns-server 8.8.8.8
 ```
 
-### 🔍 Deep Explanation
+### Deep Explanation
 
 - **`ip dhcp excluded-address`**  
   Prevents DHCP from leasing certain addresses.  
@@ -124,7 +124,7 @@ ip dhcp pool VLAN10_Pool
 
 ---
 
-# 🧩 4. VLAN Creation & Switch Access Port Assignment
+# 4. VLAN Creation & Switch Access Port Assignment
 
 We now build the segmented Layer 2 domains inside the switch.
 
@@ -145,7 +145,7 @@ interface fa0/2
  no shutdown
 ```
 
-### 🔍 Deep Explanation
+### Deep Explanation
 
 - **`vlan 10` / `vlan 20`**  
   Creates two isolated broadcast domains.  
@@ -162,7 +162,7 @@ interface fa0/2
 
 ---
 
-# 🔍 5. Layer 2 Verification
+# 5. Layer 2 Verification
 
 ![Switch State]("images/Step 5 vlan brief interfaces trunk Switch.png")
 
@@ -182,7 +182,7 @@ These confirmed:
 
 ---
 
-# ❌ 6. Initial Connectivity Failure
+# 6. Initial Connectivity Failure
 
 ![Ping Failure]("images/Step 5 Ping VLANs.png")
 
@@ -196,7 +196,7 @@ The correct fix: create router subinterfaces.
 
 ---
 
-# 🚦 7. Router-on-a-Stick Subinterface Configuration
+# 7. Router-on-a-Stick Subinterface Configuration
 
 ![Subinterfaces]("images/Step 1.png")
 
@@ -214,7 +214,7 @@ interface gigabitEthernet0/0/0.20
  no shutdown
 ```
 
-### 🔍 Deep Explanation
+### Deep Explanation
 
 - **`interface g0/0/0.10`**  
   Creates a VLAN10 *logical* interface — VLAN10 traffic is routed here.
@@ -234,7 +234,7 @@ This is essential because routers forward packets **between** networks.
 
 ---
 
-# 🔗 8. Configuring the Trunk Link (Switch → Router)
+# 8. Configuring the Trunk Link (Switch → Router)
 
 ![Trunk]("images/Step 5 vlan brief interfaces trunk Switch.png")
 
@@ -247,7 +247,7 @@ interface fa0/1
  no shutdown
 ```
 
-### 🔍 Deep Explanation
+### Deep Explanation
 
 - **`switchport mode trunk`**  
   Makes Fa0/1 a trunk port capable of carrying multiple VLANs.
@@ -259,7 +259,7 @@ interface fa0/1
 
 ---
 
-# 🖥️ 9. PC DHCP Configuration
+# 9. PC DHCP Configuration
 
 ![PC DHCP]("images/Step 4.png")
 
@@ -274,7 +274,7 @@ All supplied by the `VLAN10_Pool` DHCP configuration.
 
 ---
 
-# ✅ 10. Successful Connectivity Tests
+# 10. Successful Connectivity Tests
 
 ![Successful Ping]("images/Step 5 Ping VLANs.png")
 
@@ -289,7 +289,7 @@ We validated routing by pinging both VLAN gateway interfaces:
 
 ---
 
-# 📘 Deep Command Reference (Consolidated)
+# Deep Command Reference (Consolidated)
 
 ### EXEC & Configuration Modes  
 - **enable** — privileged EXEC mode  

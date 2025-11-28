@@ -297,6 +297,181 @@ We validated end-to-end routing and DHCP operation.
 
 ---
 
+# 10. Bonus Expansion: Multi-Network Communication via ISP Router & Static Routing
+
+In this extended portion of the original project, we expanded the lab to simulate **two separate local networks** communicating across an **intermediate ISP router**, modeling how real organizations interconnect geographically separated sites. This enhancement demonstrates routed WAN links, IP addressing schemes for point-to-point connections, and static routing tables that enable full end-to-end communication.
+
+This section follows the same structure and professional formatting style as the original VLAN and router-on-a-stick lab.
+
+---
+
+# 10.1 Objective of the Expansion
+
+The purpose of this expansion was to build on the original segmented network by introducing:
+
+- A multi-router environment  
+- An ISP transit network  
+- `/30` WAN subnets for point-to-point routing  
+- Static routes to enable cross-LAN communication  
+- Simulation mode validation using ARP + ICMP filters only  
+
+By completing this extension, we created a small-scale representation of how two remote LANs communicate through a service provider using IPv4 routing tables.
+
+---
+
+# 10.2 Expanded Logical Topology
+
+The final design consists of **three routers**, **two switches**, and **two workstations**, arranged into two independent LANs joined by an ISP core.
+
+## Left-Side LAN (Network A)
+- **RT-01** – Edge router for Network A  
+- **SW-01** – Access switch  
+- **PC-01** – Workstation  
+- **LAN Subnet:** `192.168.100.0/24`  
+- **Gateway:** `192.168.100.1`  
+- **Device Abbreviations:**  
+  - **RT** = Router  
+  - **SW** = Switch  
+  - **PC** = Personal Computer  
+
+## Right-Side LAN (Network B)
+- **RT-02** – Edge router for Network B  
+- **SW-02** – Access switch  
+- **PC-02** – Workstation  
+- **LAN Subnet:** `192.168.200.0/24`  
+- **Gateway:** `192.168.200.1`  
+
+## ISP Transit Router
+- Provides interconnection between both networks  
+- No DHCP, VLANs, or switching  
+- Pure Layer 3 forwarding  
+- Uses `/30` networks for efficient point-to-point addressing  
+
+---
+
+# 10.3 WAN Point-to-Point Subnetting
+
+We assigned `/30` subnets to each router-to-router link. A `/30` provides exactly:
+
+- 1 usable IP per device (2 total hosts)  
+- 1 network ID  
+- 1 broadcast address  
+
+This is the industry standard for WAN serial or Ethernet point-to-point connections.
+
+### Subnet Allocation
+- **RT-01 ↔ ISP:** `10.0.0.0/30`  
+  - RT-01 = `10.0.0.1`  
+  - ISP  = `10.0.0.2`  
+
+- **RT-02 ↔ ISP:** `10.0.0.4/30`  
+  - ISP   = `10.0.0.5`  
+  - RT-02 = `10.0.0.6`  
+
+These subnets form the WAN backbone that carries cross-LAN traffic.
+
+---
+
+# 10.4 Static Routing Table Configuration
+
+Static routes were created on each router to inform them of all remote networks.
+
+## RT-01 Routing Table
+Routes traffic for Network B and next-hop WAN:
+```bash
+ip route 192.168.200.0 255.255.255.0 10.0.0.2
+```
+
+## RT-02 Routing Table
+Routes traffic for Network A and next-hop WAN:
+```bash
+ip route 192.168.100.0 255.255.255.0 10.0.0.5
+```
+
+## ISP Routing Table
+Directs traffic between both remote LANs:
+```bash
+ip route 192.168.100.0 255.255.255.0 10.0.0.1
+ip route 192.168.200.0 255.255.255.0 10.0.0.6
+```
+
+This created full bidirectional reachability.
+
+---
+
+# 10.5 DHCP & LAN Connectivity Verification
+
+Both LANs obtained correct DHCP leases from their respective routers:
+
+## PC-01 (Network A)
+- IP: `192.168.100.X`  
+- Mask: `255.255.255.0`  
+- Gateway: `192.168.100.1`  
+
+## PC-02 (Network B)
+- IP: `192.168.200.X`  
+- Mask: `255.255.255.0`  
+- Gateway: `192.168.200.1`  
+
+Correct DHCP operation confirmed that the VLAN-based LAN configuration from the original project transferred cleanly into this multi-router environment.
+
+---
+
+# 10.6 End-to-End Connectivity Testing
+
+After routing tables were configured, both PCs were able to:
+
+- Ping each other  
+- Ping the opposite router  
+- Ping across the ISP  
+- Perform ARP resolution correctly  
+
+Simulation mode was used for validation with only:
+
+- **ARP**  
+- **ICMP**
+
+enabled in the Event Filter, allowing a clean visual workflow.
+
+### Observed Packet Flow
+1. PC-01 sends ARP request  
+2. Local switch forwards frame  
+3. RT-01 resolves MAC  
+4. Packet travels to ISP router  
+5. ISP forwards to RT-02  
+6. RT-02 performs ARP for PC-02  
+7. ICMP Echo Reply travels back the same path  
+
+This confirmed flawless multi-router end-to-end communication.
+
+---
+
+# 10.7 Bonus Video Demonstration Placeholder
+
+Below is a placeholder section for attaching your final Packet Tracer simulation video:
+
+**▶ WAN Simulation Video Demonstration**  
+*This video demonstrates successful ARP + ICMP flow in Simulation Mode with only ARP and ICMP enabled in the event filter, showing full packet traversal between two independent networks across an ISP transit router.*
+
+https://github.com/user-attachments/assets/4df6dc48-300d-4fcc-9fd7-f9f1e2eb3059
+
+---
+
+# 10.8 Summary of the Multi-Network Expansion
+
+This bonus section built on the original VLAN and router-on-a-stick project by introducing:
+
+- A three-router, two-LAN architecture  
+- Realistic ISP transit routing  
+- `/30` point-to-point subnets  
+- Static routing tables enabling remote network communication  
+- Successful PC-to-PC communication across separate networks  
+- Simulation verification using ARP + ICMP filters  
+
+This addition transforms the project from a single-router VLAN environment into a full **multi-router enterprise WAN simulation**, demonstrating core skills used in routing, addressing, WAN design, and troubleshooting.
+
+---
+
 # Deep Command Reference
 
 ### EXEC & Global Modes

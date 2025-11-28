@@ -323,6 +323,8 @@ By completing this extension, we created a small-scale representation of how two
 
 The final design consists of **three routers**, **two switches**, and **two workstations**, arranged into two independent LANs joined by an ISP core.
 
+<img width="1920" height="1032" alt="S1" src="https://github.com/user-attachments/assets/c696c643-3bfd-471e-be82-39ef18705366" />
+
 ## Left-Side LAN (Network A)
 - **RT-01** – Edge router for Network A  
 - **SW-01** – Access switch  
@@ -382,11 +384,15 @@ Routes traffic for Network B and next-hop WAN:
 ip route 192.168.200.0 255.255.255.0 10.0.0.2
 ```
 
+<img width="702" height="712" alt="image" src="https://github.com/user-attachments/assets/74e8de0e-7408-44be-974f-c05be6d50684" />
+
 ## RT-02 Routing Table
 Routes traffic for Network A and next-hop WAN:
 ```bash
 ip route 192.168.100.0 255.255.255.0 10.0.0.5
 ```
+
+<img width="702" height="712" alt="image" src="https://github.com/user-attachments/assets/c992bc5f-83fb-48cc-ac33-f267c129c119" />
 
 ## ISP Routing Table
 Directs traffic between both remote LANs:
@@ -394,6 +400,8 @@ Directs traffic between both remote LANs:
 ip route 192.168.100.0 255.255.255.0 10.0.0.1
 ip route 192.168.200.0 255.255.255.0 10.0.0.6
 ```
+
+<img width="702" height="712" alt="image" src="https://github.com/user-attachments/assets/c6c29fc3-f2d2-4518-b022-e7f9424e947d" />
 
 This created full bidirectional reachability.
 
@@ -408,10 +416,14 @@ Both LANs obtained correct DHCP leases from their respective routers:
 - Mask: `255.255.255.0`  
 - Gateway: `192.168.100.1`  
 
+<img width="702" height="712" alt="image" src="https://github.com/user-attachments/assets/4f900ebb-6b5a-470a-83f3-1d061793c3fa" />
+
 ## PC-02 (Network B)
 - IP: `192.168.200.X`  
 - Mask: `255.255.255.0`  
 - Gateway: `192.168.200.1`  
+
+<img width="702" height="712" alt="image" src="https://github.com/user-attachments/assets/3fd41e8a-ed3b-480c-99d9-0900392b1e07" />
 
 Correct DHCP operation confirmed that the VLAN-based LAN configuration from the original project transferred cleanly into this multi-router environment.
 

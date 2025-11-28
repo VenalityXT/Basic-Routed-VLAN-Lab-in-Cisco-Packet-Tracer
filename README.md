@@ -155,7 +155,7 @@ interface fa0/2
 Creates VLAN entries in the switch’s VLAN database.
 
 **`switchport mode access`**  
-Configures the port as an access port—untagged traffic only.
+Configures the port as an access port-untagged traffic only.
 
 **`switchport access vlan 10`**  
 Places the PC into VLAN 10’s broadcast domain.
@@ -487,31 +487,31 @@ This addition transforms the project from a single-router VLAN environment into 
 # Deep Command Reference
 
 ### EXEC & Global Modes
-- `enable` — privileged mode  
-- `configure terminal` — global configuration mode  
+- `enable` - privileged mode  
+- `configure terminal` - global configuration mode  
 
 ### Router Interfaces
-- `interface g0/0/0` — physical router port  
-- `interface g0/0/0.X` — VLAN subinterface  
-- `encapsulation dot1Q X` — VLAN tagging  
-- `ip address` — assigns Layer 3 gateway  
-- `no shutdown` — activates interface  
+- `interface g0/0/0` - physical router port  
+- `interface g0/0/0.X` - VLAN subinterface  
+- `encapsulation dot1Q X` - VLAN tagging  
+- `ip address` - assigns Layer 3 gateway  
+- `no shutdown` - activates interface  
 
 ### DHCP
-- `ip dhcp excluded-address` — reserves addresses  
-- `ip dhcp pool NAME` — creates DHCP pool  
-- `network` — defines DHCP subnet  
-- `default-router` — client gateway  
-- `dns-server` — DNS distribution  
+- `ip dhcp excluded-address` - reserves addresses  
+- `ip dhcp pool NAME` - creates DHCP pool  
+- `network` - defines DHCP subnet  
+- `default-router` - client gateway  
+- `dns-server` - DNS distribution  
 
 ### Switch VLANs
-- `vlan X` — creates VLAN  
-- `switchport mode access` — access port  
-- `switchport access vlan X` — VLAN assignment  
+- `vlan X` - creates VLAN  
+- `switchport mode access` - access port  
+- `switchport access vlan X` - VLAN assignment  
 
 ### Trunk Link
-- `switchport mode trunk` — 802.1Q trunk  
-- `switchport trunk allowed vlan all` — allow VLANs across the trunk  
+- `switchport mode trunk` - 802.1Q trunk  
+- `switchport trunk allowed vlan all` - allow VLANs across the trunk  
 
 ### Verification
 - `show vlan brief`  

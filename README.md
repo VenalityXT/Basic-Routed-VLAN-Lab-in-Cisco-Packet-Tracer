@@ -305,7 +305,7 @@ This section follows the same structure and professional formatting style as the
 
 ---
 
-# 10.1 Objective of the Expansion
+## 10.1 Objective of the Expansion
 
 The purpose of this expansion was to build on the original segmented network by introducing:
 
@@ -319,7 +319,7 @@ By completing this extension, we created a small-scale representation of how two
 
 ---
 
-# 10.2 Expanded Logical Topology
+## 10.2 Expanded Logical Topology
 
 The final design consists of **three routers**, **two switches**, and **two workstations**, arranged into two independent LANs joined by an ISP core.
 
@@ -351,7 +351,7 @@ The final design consists of **three routers**, **two switches**, and **two work
 
 ---
 
-# 10.3 WAN Point-to-Point Subnetting
+## 10.3 WAN Point-to-Point Subnetting
 
 We assigned `/30` subnets to each router-to-router link. A `/30` provides exactly:
 
@@ -374,7 +374,7 @@ These subnets form the WAN backbone that carries cross-LAN traffic.
 
 ---
 
-# 10.4 Static Routing Table Configuration
+## 10.4 Static Routing Table Configuration
 
 Static routes were created on each router to inform them of all remote networks.
 
@@ -407,18 +407,18 @@ This created full bidirectional reachability.
 
 ---
 
-# 10.5 DHCP & LAN Connectivity Verification
+## 10.5 DHCP & LAN Connectivity Verification
 
 Both LANs obtained correct DHCP leases from their respective routers:
 
-## PC-01 (Network A)
+### PC-01 (Network A)
 - IP: `192.168.100.X`  
 - Mask: `255.255.255.0`  
 - Gateway: `192.168.100.1`  
 
 <img width="702" height="712" alt="image" src="https://github.com/user-attachments/assets/4f900ebb-6b5a-470a-83f3-1d061793c3fa" />
 
-## PC-02 (Network B)
+### PC-02 (Network B)
 - IP: `192.168.200.X`  
 - Mask: `255.255.255.0`  
 - Gateway: `192.168.200.1`  
@@ -429,7 +429,7 @@ Correct DHCP operation confirmed that the VLAN-based LAN configuration from the 
 
 ---
 
-# 10.6 End-to-End Connectivity Testing
+## 10.6 End-to-End Connectivity Testing
 
 After routing tables were configured, both PCs were able to:
 
@@ -458,7 +458,7 @@ This confirmed flawless multi-router end-to-end communication.
 
 ---
 
-# 10.7 Bonus Video Demonstration Placeholder
+## 10.7 Bonus Video Demonstration Placeholder
 
 Below is a placeholder section for attaching your final Packet Tracer simulation video:
 
@@ -469,7 +469,7 @@ https://github.com/user-attachments/assets/4df6dc48-300d-4fcc-9fd7-f9f1e2eb3059
 
 ---
 
-# 10.8 Summary of the Multi-Network Expansion
+## 10.8 Summary of the Multi-Network Expansion
 
 This bonus section built on the original VLAN and router-on-a-stick project by introducing:
 
